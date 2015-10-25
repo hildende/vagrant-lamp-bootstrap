@@ -14,7 +14,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Share an additional folder to the guest VM. The first argument is the path on the host to the actual folder.
   # The second argument is the path on the guest to mount the folder.
-  config.vm.synced_folder "./", "/var/www/html"
+  config.vm.synced_folder "./", "/var/www/html",
+    owner: "vagrant",
+    group: "www-data",
+    mount_options: ["dmode=777,fmode=777"]
 
   # Define the bootstrap file: A (shell) script that runs after first setup of your box (= provisioning)
   config.vm.provision :shell, path: "bootstrap.sh"
