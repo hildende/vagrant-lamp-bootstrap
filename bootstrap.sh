@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
 # Use single quotes instead of double quotes to make it work with special-character passwords
-PASSWORD='12345678'
+PASSWORD='vagrant'
+IP="192.168.33.22"
 PROJECTFOLDER='myproject'
+# set, if different from project folder
+DATABASE=''
+
+if [[ -z "$DATABASE" ]]; then
+	DATABASE=${PROJECTFOLDER}
+fi
 
 # create project folder
 sudo mkdir "/var/www/html/${PROJECTFOLDER}"
@@ -55,3 +62,17 @@ sudo apt-get -y install git
 # install Composer
 curl -s https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
+
+
+# create mysql database
+echo "CREATE DATABASE IF NOT EXISTS ${DATABASE}" | mysql -uroot -p${PASSWORD}
+
+# create index files
+echo "<h1>Hello ${PROJECTFOLDER}!</h1>" >> /var/www/html/${PROJECTFOLDER}/index.html
+echo "<p>Apache is running.<p>" >> /var/www/html/${PROJECTFOLDER}/index.html
+echo "<p>Head over to <a href='index.php'>index.php</a> to see if php is working, too.</p>" >> /var/www/html/${PROJECTFOLDER}/index.html
+echo "<?php phpinfo();" >> /var/www/html/${PROJECTFOLDER}/index.php
+
+rm /var/www/html/index.html
+
+echo "\n\nHead over to http://${IP} to see if apache is running."
